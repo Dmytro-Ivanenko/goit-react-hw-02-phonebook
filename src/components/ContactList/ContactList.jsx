@@ -1,18 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './input.module.scss';
+import styles from './contactList.module.scss';
 
-const Input = ({ type, name, pattern, title }) => {
+const ContactList = ({ contactsArr }) => {
   return (
-    <input type={type} name={name} pattern={pattern} title={title} required />
+    <ul>
+      {contactsArr.map(({ id, name, number }) => {
+        return (
+          <li key={id}>
+            <p>{name}:</p>
+            <p>{number}</p>
+          </li>
+        );
+      })}
+    </ul>
   );
 };
 
-Input.propTypes = {
-  title: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  pattern: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+ContactList.propTypes = {
+  contactsArr: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ),
 };
 
-export default Input;
+export default ContactList;

@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './input.module.scss';
+import styles from './filter.module.scss';
 
-const Input = ({ type, name, pattern, title }) => {
+const Filter = ({ onChangeFilter }) => {
   return (
-    <input type={type} name={name} pattern={pattern} title={title} required />
+    <label>
+      Find contacts by name
+      <input type="text" onChange={onChangeFilter} />
+    </label>
   );
 };
 
-Input.propTypes = {
-  title: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  pattern: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+Filter.propTypes = {
+  onChangeFilter: PropTypes.func.isRequired,
 };
 
-export default Input;
+export default Filter;

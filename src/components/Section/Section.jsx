@@ -13,7 +13,11 @@ const Section = ({ children, title }) => {
 
 Section.propTypes = {
   title: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.array,
+    PropTypes.string,
+  ]).isRequired,
 };
 
 export default Section;

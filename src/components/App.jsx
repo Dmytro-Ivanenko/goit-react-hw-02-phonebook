@@ -1,45 +1,101 @@
 import React, { Component } from 'react';
-import Section from '../components/Section/Section';
-import ContactForm from '../components/ContactForm/ContactForm';
+import uniqid from 'uniqid';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
+import Section from './Section/Section';
+import ContactForm from './ContactForm/ContactForm';
+import ContactList from './ContactList/ContactList';
+import Filter from './Filter/Filter';
 
 class App extends Component {
   state = {
-    contacts: [],
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
     filter: '',
   };
+
+  filteredList = [];
 
   addContacts = (contact) => {
     this.setState({ contacts: contact });
   };
 
+  // _____________________________ FORM
   handleSubmitForm = (evn) => {
     evn.preventDefault();
     const { name, number } = evn.target.elements;
 
+    // name check
+    if (!this.isNameFree(name.value)) {
+      return;
+    }
+
     const result = this.state.contacts.slice();
 
     result.push({
-      name: name.value,
+      id: uniqid(),
+      name: name.value.toLowerCase(),
       number: number.value,
     });
-
-    console.log(result);
 
     // add new array into state
     this.addContacts(result);
 
+    // refresh form
     name.value = '';
     number.value = '';
   };
 
+  isNameFree = (nameToCheck) => {
+    const result = this.state.contacts.filter(
+      ({ name }) => name.toLowerCase() === nameToCheck.toLowerCase()
+    );
+
+    if (result.length > 0) {
+      Notify.warning(`${nameToCheck} is already in contacts.`);
+      return false;
+    }
+
+    return true;
+  };
+
+  // _______________________________FILTER
+
+  onChangeFilter = (evn) => {
+    const personName = evn.target.value;
+
+    this.setState({ filter: personName });
+
+    this.filterList(personName.toLowerCase());
+  };
+
+  filterList = (personName) => {
+    const result = this.state.contacts.filter((elem) => {
+      return elem.name.toLowerCase().includes(personName);
+    });
+
+    this.filteredList = result;
+  };
+
+  // RENDER
   render() {
+    const { filter, contacts } = this.state;
     return (
       <>
         <Section title="Phonebook">
           <ContactForm onSubmitForm={this.handleSubmitForm} />
         </Section>
 
-        <Section title="Contacts">кккк</Section>
+        <Section title="Contacts">
+          <Filter onChangeFilter={this.onChangeFilter} />
+          <ContactList
+            contactsArr={filter.length > 0 ? this.filteredList : contacts}
+          />
+        </Section>
       </>
     );
   }
