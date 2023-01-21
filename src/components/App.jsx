@@ -8,15 +8,35 @@ class App extends Component {
     filter: '',
   };
 
-  setContacts = (value) => {
-    console.log(value);
+  addContacts = (contact) => {
+    this.setState({ contacts: contact });
+  };
+
+  handleSubmitForm = (evn) => {
+    evn.preventDefault();
+    const { name, number } = evn.target.elements;
+
+    const result = this.state.contacts.slice();
+
+    result.push({
+      name: name.value,
+      number: number.value,
+    });
+
+    console.log(result);
+
+    // add new array into state
+    this.addContacts(result);
+
+    name.value = '';
+    number.value = '';
   };
 
   render() {
     return (
       <>
         <Section title="Phonebook">
-          <ContactForm />
+          <ContactForm onSubmitForm={this.handleSubmitForm} />
         </Section>
 
         <Section title="Contacts">кккк</Section>
