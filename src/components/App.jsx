@@ -20,7 +20,7 @@ class App extends Component {
 
   filteredList = [];
 
-  //_______________________________APP
+  //_______________________________ APP
   addContacts = (contact) => {
     this.setState({ contacts: contact });
   };
