@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import styles from './button.module.scss';
 
 const Button = ({ type, onClickBtn, children }) => {
-  return (
-    <button type={type} className={styles.button} onClick={onClickBtn}>
-      {children}
-    </button>
-  );
+	return (
+		<button type={type} className={styles.button} onClick={onClickBtn}>
+			{children}
+		</button>
+	);
 };
 
 Button.propTypes = {
-  type: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-  children: PropTypes.string.isRequired,
+	type: PropTypes.string.isRequired,
+	onClick: PropTypes.func.isRequired,
+	children: PropTypes.node,
 };
 
 export default Button;

@@ -6,116 +6,105 @@ import Section from './Section/Section';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
+import Notification from './Notification/Notification';
 
 class App extends Component {
-  state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
-  };
+	state = {
+		contacts: [
+			{ id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+			{ id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+			{ id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+			{ id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+		],
+		filter: '',
+	};
 
-  filteredList = [];
+	// APP
+	addContacts = (newContact) => {
+		this.setState(({ contacts }) => {
+			return { contacts: [...contacts, newContact] };
+		});
+	};
 
-  //_______________________________ APP
-  addContacts = (contact) => {
-    this.setState({ contacts: contact });
-  };
+	removeContact = (idDelete) => {
+		this.setState((prevState) => {
+			return {
+				contacts: prevState.contacts.filter(({ id }) => {
+					return !(id === idDelete);
+				}),
+			};
+		});
+	};
 
-  removeContact = (evn) => {
-    const result = this.state.contacts.filter(({ id }) => {
-      return !(id === evn.target.parentElement.id);
-    });
+	// FORM
+	handleSubmitForm = ({ name, number }) => {
+		// name check
 
-    this.addContacts(result);
-    this.resetFilter();
-  };
+		if (!this.isNameFree(name)) {
+			return;
+		}
 
-  // _____________________________ FORM
-  handleSubmitForm = (evn) => {
-    evn.preventDefault();
-    const { name, number } = evn.target.elements;
+		const newContact = {
+			id: uniqid(),
+			name: name.toLowerCase(),
+			number,
+		};
 
-    // name check
-    if (!this.isNameFree(name.value)) {
-      return;
-    }
+		// add new contact into state
+		this.addContacts(newContact);
+	};
 
-    const result = this.state.contacts.slice();
+	isNameFree = (nameToCheck) => {
+		const result = this.state.contacts.filter(
+			({ name }) => name.toLowerCase() === nameToCheck.toLowerCase()
+		);
 
-    result.push({
-      id: uniqid(),
-      name: name.value.toLowerCase(),
-      number: number.value,
-    });
+		if (result.length > 0) {
+			Notify.warning(`${nameToCheck} is already in contacts.`);
+			return false;
+		}
 
-    // add new array into state
-    this.addContacts(result);
+		return true;
+	};
 
-    // refresh form
-    name.value = '';
-    number.value = '';
-    this.resetFilter();
-  };
+	// FILTER
+	onChangeFilter = (evn) => {
+		this.setState({ filter: evn.target.value });
+	};
 
-  isNameFree = (nameToCheck) => {
-    const result = this.state.contacts.filter(
-      ({ name }) => name.toLowerCase() === nameToCheck.toLowerCase()
-    );
+	filteredList = (filterName) => {
+		return this.state.contacts.filter(({ name }) => {
+			return name.toLowerCase().includes(filterName.toLowerCase());
+		});
+	};
 
-    if (result.length > 0) {
-      Notify.warning(`${nameToCheck} is already in contacts.`);
-      return false;
-    }
+	// RENDER
+	render() {
+		const { filter, contacts } = this.state;
+		return (
+			<>
+				<Section title="Phonebook">
+					<ContactForm onSubmitForm={this.handleSubmitForm} />
+				</Section>
 
-    return true;
-  };
-
-  // _______________________________FILTER
-
-  onChangeFilter = (evn) => {
-    const personName = evn.target.value;
-
-    this.setState({ filter: personName });
-
-    this.filterList(personName.toLowerCase());
-  };
-
-  filterList = (personName) => {
-    const result = this.state.contacts.filter((elem) => {
-      return elem.name.toLowerCase().includes(personName);
-    });
-
-    this.filteredList = result;
-  };
-
-  resetFilter = () => {
-    this.setState({ filter: '' });
-    this.filteredList = [];
-  };
-
-  // RENDER
-  render() {
-    const { filter, contacts } = this.state;
-    return (
-      <>
-        <Section title="Phonebook">
-          <ContactForm onSubmitForm={this.handleSubmitForm} />
-        </Section>
-
-        <Section title="Contacts">
-          <Filter onChangeFilter={this.onChangeFilter} />
-          <ContactList
-            contactsArr={filter.length > 0 ? this.filteredList : contacts}
-            deleteFunc={this.removeContact}
-          />
-        </Section>
-      </>
-    );
-  }
+				<Section title="Contacts">
+					{this.state.contacts.length > 0 ? (
+						<>
+							<Filter onChangeFilter={this.onChangeFilter} value={filter} />
+							<ContactList
+								contactsArr={
+									filter.length > 0 ? this.filteredList(filter) : contacts
+								}
+								deleteFunc={this.removeContact}
+							/>
+						</>
+					) : (
+						<Notification message="There is no contacts"></Notification>
+					)}
+				</Section>
+			</>
+		);
+	}
 }
 
 export default App;

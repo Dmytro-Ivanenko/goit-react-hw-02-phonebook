@@ -12,13 +12,19 @@ class ContactForm extends Component {
 
   onChangeInput = (evn) => {
     this.setState({
-      [evn.target.name]: [evn.target.value],
+      [evn.target.name]: evn.target.value,
     });
+  };
+
+  handleSubmit = (evn) => {
+    evn.preventDefault();
+    this.props.onSubmitForm(this.state);
+    evn.target.reset();
   };
 
   render() {
     return (
-      <form className={styles.form} onSubmit={this.props.onSubmitForm}>
+      <form className={styles.form} onSubmit={this.handleSubmit}>
         <label className={styles.label} htmlFor="name">
           Name
         </label>
