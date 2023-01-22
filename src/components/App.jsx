@@ -20,8 +20,18 @@ class App extends Component {
 
   filteredList = [];
 
+  //_______________________________APP
   addContacts = (contact) => {
     this.setState({ contacts: contact });
+  };
+
+  removeContact = (evn) => {
+    const result = this.state.contacts.filter(({ id }) => {
+      return !(id === evn.target.parentElement.id);
+    });
+
+    this.addContacts(result);
+    this.resetFilter();
   };
 
   // _____________________________ FORM
@@ -48,6 +58,7 @@ class App extends Component {
     // refresh form
     name.value = '';
     number.value = '';
+    this.resetFilter();
   };
 
   isNameFree = (nameToCheck) => {
@@ -81,6 +92,11 @@ class App extends Component {
     this.filteredList = result;
   };
 
+  resetFilter = () => {
+    this.state.filter = '';
+    this.filteredList = [];
+  };
+
   // RENDER
   render() {
     const { filter, contacts } = this.state;
@@ -94,6 +110,7 @@ class App extends Component {
           <Filter onChangeFilter={this.onChangeFilter} />
           <ContactList
             contactsArr={filter.length > 0 ? this.filteredList : contacts}
+            deleteFunc={this.removeContact}
           />
         </Section>
       </>
