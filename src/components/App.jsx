@@ -93,7 +93,7 @@ class App extends Component {
   };
 
   resetFilter = () => {
-    this.state.filter = '';
+    this.setState({ filter: '' });
     this.filteredList = [];
   };
 

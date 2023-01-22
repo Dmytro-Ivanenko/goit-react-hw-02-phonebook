@@ -4,9 +4,9 @@ import styles from './filter.module.scss';
 
 const Filter = ({ onChangeFilter }) => {
   return (
-    <label>
+    <label className={styles.label}>
       Find contacts by name
-      <input type="text" onChange={onChangeFilter} />
+      <input className={styles.input} type="text" onChange={onChangeFilter} />
     </label>
   );
 };

@@ -8,9 +8,9 @@ const ContactList = ({ contactsArr, deleteFunc }) => {
     <ul>
       {contactsArr.map(({ id, name, number }) => {
         return (
-          <li key={id} id={id}>
-            <p>{name}:</p>
-            <p>{number}</p>
+          <li key={id} id={id} className={styles.li}>
+            <p className={styles.name}>{name}:</p>
+            <p className={styles.number}>{number}</p>
             <Button type="button" onClickBtn={deleteFunc}>
               Delete
             </Button>
